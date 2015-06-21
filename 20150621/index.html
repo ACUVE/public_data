@@ -48,6 +48,16 @@ function CreateSin(freq, sampleRate, sec){
     }
     return data;
 }
+function CreateSin2(freqdown, frequp, sampleRate, sec){
+    sec = sec || 1;
+    
+    var data = [];
+    var fdl = Math.log(freqdown), ful = Math.log(frequp);
+    for(var i = 0; i < sampleRate * sec; ++i){
+        data.push(Math.sin(Math.exp((ful - fdl) / (sampleRate * sec - 1) * i + fdl) * 2 * Math.PI * i / sampleRate));
+    }
+    return data;
+}
 function ArrayBufferToBase64(buffer){
     var binary = '';
     var bytes = new Uint8Array(buffer);
@@ -68,7 +78,12 @@ addEventListener('DOMContentLoaded', function(){
     var aud = document.getElementById('audio');
     
     button.addEventListener('click', function(){
-        var data = CreateSin(input_hz.value - 0, sampleRate, input_sec.value - 0);
+        var data, m;
+        if(m = input_hz.value.match(/(\d+)-(\d+)/)){
+            data = CreateSin2(m[1] - 0, m[2] - 0, sampleRate, input_sec.value - 0);
+        }else{
+            data = CreateSin(input_hz.value - 0, sampleRate, input_sec.value - 0);
+        }
         var a = CreateWavFileData(data, sampleRate);
         var base64String = ArrayBufferToBase64(a);
         
@@ -91,6 +106,6 @@ audio{
     This is wav sample program.
 </p>
 <div>
-    <input type="text" id="input_hz">Hz : <input type="text" id="input_sec" value="2">sec : <button id="sound_button">Sound!</button><br>
+    <input type="text" id="input_hz" value="440">Hz : <input type="text" id="input_sec" value="2">sec : <button id="sound_button">Sound!</button><br>
     <audio controls autoplay id="audio">
 </div>
