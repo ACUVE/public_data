@@ -76,6 +76,7 @@ addEventListener('DOMContentLoaded', function(){
     var input_sec = document.getElementById('input_sec');
     var button = document.getElementById('sound_button');
     var aud = document.getElementById('audio');
+    var a_down = document.getElementById('a_download');
     
     button.addEventListener('click', function(){
         var data, m;
@@ -87,8 +88,12 @@ addEventListener('DOMContentLoaded', function(){
         var a = CreateWavFileData(data, sampleRate);
         var base64String = ArrayBufferToBase64(a);
         
-        aud.src = 'data:audio/x-wav;base64,' + base64String;
+        var data_uri = 'data:audio/x-wav;base64,' + base64String;
+        
+        aud.src = data_uri;
         aud.play();
+        
+        a_down.href = data_uri;
     });
 });
 </script>
@@ -107,5 +112,5 @@ audio{
 </p>
 <div>
     <input type="text" id="input_hz" value="440">Hz : <input type="text" id="input_sec" value="2">sec : <button id="sound_button">Sound!</button><br>
-    <audio controls autoplay id="audio">
+    <audio controls autoplay id="audio"></audio> <a id="a_download">Download</a>
 </div>
