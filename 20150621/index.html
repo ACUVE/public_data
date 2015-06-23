@@ -59,14 +59,10 @@ function CreateSin2(freqdown, frequp, sampleRate, sec){
     }
     return data;
 }
-function ArrayBufferToBase64(buffer){
-    var binary = '';
-    var bytes = new Uint8Array(buffer);
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary);
+function ArrayBufferToURL(buffer, type){
+    var blob = new Blob([buffer], {type: type});
+    var url = URL.createObjectURL(blob);
+    return url;
 }
 
 
@@ -87,14 +83,12 @@ addEventListener('DOMContentLoaded', function(){
             data = CreateSin(input_hz.value - 0, sampleRate, input_sec.value - 0);
         }
         var a = CreateWavFileData(data, sampleRate);
-        var base64String = ArrayBufferToBase64(a);
+        var url = ArrayBufferToURL(a, 'audio/x-wav');
         
-        var data_uri = 'data:audio/x-wav;base64,' + base64String;
-        
-        aud.src = data_uri;
+        aud.src = url;
         aud.play();
         
-        a_down.href = data_uri;
+        a_down.href = url;
     });
 });
 </script>
