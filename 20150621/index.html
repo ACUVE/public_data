@@ -76,10 +76,9 @@ function SaveBolbURL(url, filename){
 }
 
 addEventListener('DOMContentLoaded', function(){
-    var sampleRate = 44100;
-    
     var input_hz = document.getElementById('input_hz');
     var input_sec = document.getElementById('input_sec');
+    var input_sample = document.getElementById('input_sample');
     var button = document.getElementById('sound_button');
     var aud = document.getElementById('audio');
     var a_down = document.getElementById('a_download');
@@ -87,6 +86,7 @@ addEventListener('DOMContentLoaded', function(){
     var down_url = null;
     
     button.addEventListener('click', function(){
+        var sampleRate = input_sample.value - 0;
         var data, m;
         if(m = input_hz.value.match(/(\d+)-(\d+)/)){
             data = CreateSin2(m[1] - 0, m[2] - 0, sampleRate, input_sec.value - 0);
@@ -130,5 +130,6 @@ audio{
 </p>
 <div>
     <input type="text" id="input_hz" value="440">Hz : <input type="text" id="input_sec" value="2">sec : <button id="sound_button">Sound!</button><br>
+    <input type="text" id="input_sample" value="44100">sample/sec<br>
     <audio controls autoplay id="audio"></audio> <a id="a_download">Download</a>
 </div>
