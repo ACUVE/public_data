@@ -65,6 +65,15 @@ function ArrayBufferToURL(buffer, type){
     return url;
 }
 
+// http://jsdo.it/Yukisuke/c1VD
+function SaveBolbURL(url, filename){
+    var eve = document.createEvent('MouseEvents');
+    eve.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    var a = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+    a.href = url;
+    a.download = filename;
+    a.dispatchEvent(eve);
+}
 
 addEventListener('DOMContentLoaded', function(){
     var sampleRate = 44100;
@@ -74,6 +83,8 @@ addEventListener('DOMContentLoaded', function(){
     var button = document.getElementById('sound_button');
     var aud = document.getElementById('audio');
     var a_down = document.getElementById('a_download');
+    
+    var down_url = null;
     
     button.addEventListener('click', function(){
         var data, m;
@@ -85,10 +96,22 @@ addEventListener('DOMContentLoaded', function(){
         var a = CreateWavFileData(data, sampleRate);
         var url = ArrayBufferToURL(a, 'audio/x-wav');
         
+        if(down_url){
+            URL.revokeObjectURL(down_url);
+        }
+        down_url = url;
+        a_down.href = url;
+        
         aud.src = url;
         aud.play();
+    });
+    a_down.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
         
-        a_down.href = url;
+        if(down_url){
+            SaveBolbURL(down_url, 'nantoka.wav');
+        }
     });
 });
 </script>
