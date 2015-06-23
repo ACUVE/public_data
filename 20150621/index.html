@@ -43,7 +43,7 @@ function CreateSin(freq, sampleRate, sec){
     sec = sec || 1;
     
     var data = [];
-    for(var i = 0; i < sampleRate * sec; ++i){
+    for(var i = 0; i <= sampleRate * sec; ++i){
         data.push(Math.sin(freq * 2 * Math.PI * i / sampleRate));
     }
     return data;
@@ -53,8 +53,9 @@ function CreateSin2(freqdown, frequp, sampleRate, sec){
     
     var data = [];
     var fdl = Math.log(freqdown), ful = Math.log(frequp);
-    for(var i = 0; i < sampleRate * sec; ++i){
-        data.push(Math.sin(Math.exp((ful - fdl) / (sampleRate * sec - 1) * i + fdl) * 2 * Math.PI * i / sampleRate));
+    var con = (ful - fdl) / sec;
+    for(var i = 0; i <= sampleRate * sec; ++i){
+        data.push(Math.sin(freqdown / con * (Math.exp(con * i / sampleRate) - 1) * 2 * Math.PI));
     }
     return data;
 }
