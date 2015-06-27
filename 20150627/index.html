@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<title>WebAudio Test</title>
+<meta name="viewport" content="width=device-width">
+<script>
+(function(){
+'use strict';
+
+
+addEventListener('DOMContentLoaded', Init);
+
+var TestApp = function(div){
+    this.div = div;
+    this.oscillators = [];
+    this.con = new AudioContext;
+    
+    this.InitializeDom();
+    this.AddDomEvent();
+    this.AddOscillator();
+}
+TestApp.prototype.InitializeDom = function(){
+    var d = this.div;
+    
+    this.div_oscillator = ce('div');
+    d.appendChild(this.div_oscillator);
+    
+    this.button_add = ce('button');
+    this.button_add.textContent = 'Add oscillator';
+    d.appendChild(this.button_add);
+};
+TestApp.prototype.AddDomEvent = function(){
+    this.button_add.addEventListener('click', this.AddOscillator.bind(this));
+};
+TestApp.prototype.AddOscillator = function(){
+    var div = ce('div');
+    this.oscillators.push({
+        osci: new TestApp.Oscillator(div, this.con),
+        div: div
+    });
+    this.div_oscillator.appendChild(div);
+};
+
+TestApp.Oscillator = function(div, con){
+    this.con = con;
+    this.div = div;
+    
+    this.InitializeAudio();
+    this.InitializeDom();
+    this.AddDomEvent();
+    this.InitialEvent();
+};
+TestApp.Oscillator.prototype.InitializeAudio = function(){
+    this.oscillator = null;
+    this.gain = this.con.createGain();
+    
+    this.gain.connect(this.con.destination);
+};
+TestApp.Oscillator.prototype.InitializeDom = function(){
+    var d = this.div;
+    
+    this.input_hz = ce('input');
+    this.input_hz.type = 'text';
+    this.input_hz.value = '440';
+    this.input_hz.size = '12';
+    d.appendChild(this.input_hz);
+    
+    d.appendChild(ct('Hz : '));
+    
+    this.input_sec = ce('input');
+    this.input_sec.type = 'text';
+    this.input_sec.value = '2';
+    this.input_sec.size = '3';
+    d.appendChild(this.input_sec);
+    
+    d.appendChild(ct('sec : '));
+    
+    this.button_play = ce('button');
+    this.button_play.textContent = 'play';
+    d.appendChild(this.button_play);
+    
+    d.appendChild(ct(' / '));
+    
+    this.button_stop = ce('button');
+    this.button_stop.textContent = 'stop';
+    d.appendChild(this.button_stop);
+    
+    d.appendChild(ce('br'));
+    
+    this.input_gain = ce('input');
+    this.input_gain.type = 'range';
+    this.input_gain.min = '0';
+    this.input_gain.max = '1';
+    this.input_gain.step = '0.01';
+    this.input_gain.value = '0.3';
+    d.appendChild(this.input_gain);
+    
+    this.span_gain = ce('span');
+    d.appendChild(this.span_gain);
+};
+TestApp.Oscillator.prototype.AddDomEvent = function(){
+    this.input_gain.addEventListener('input', this.OnChangeGain.bind(this));
+    this.button_play.addEventListener('click', this.PlaySound.bind(this));
+    this.button_stop.addEventListener('click', this.StopSound.bind(this));
+};
+TestApp.Oscillator.prototype.InitialEvent = function(){
+    this.OnChangeGain();
+    this.StopSound();
+};
+TestApp.Oscillator.prototype.OnChangeGain = function(){
+    this.span_gain.textContent = this.input_gain.value;
+    this.gain.gain.value = this.input_gain.value - 0;
+};
+TestApp.Oscillator.prototype.PlaySound = function(){
+    this.button_play.disabled = true;
+    this.button_stop.disabled = false;
+    
+    this.oscillator = this.con.createOscillator();
+    this.oscillator.frequency.value = this.input_hz.value - 0;
+    this.oscillator.onended = function(){
+        this.oscillator = null;
+        this.StopSound();
+    }.bind(this);
+    this.oscillator.connect(this.gain);
+    this.oscillator.start();
+    this.oscillator.stop(this.input_sec.value - 0 + this.con.currentTime);
+};
+TestApp.Oscillator.prototype.StopSound = function(){
+    this.button_play.disabled = false;
+    this.button_stop.disabled = true;
+    
+    if(this.oscillator){
+        this.oscillator.stop();
+    }
+}
+
+function Init(){
+    var out = $('out');
+    var app = new TestApp(out);
+}
+
+function $(){
+    return document.getElementById.apply(document, arguments);
+}
+function log(){
+    return console.log.apply(console, arguments);
+}
+function ce(){
+    return document.createElement.apply(document, arguments);
+}
+function ct(){
+    return document.createTextNode.apply(document, arguments);
+}
+})();
+</script>
+<header>
+<h1>
+    WebAudio Test
+</h1>
+</header>
+<div id="out">
+</div>
