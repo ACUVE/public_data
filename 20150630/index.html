@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<title>WebAudio Test</title>
+<meta name="viewport" content="width=device-width">
+<script>
+(function(){
+'use strict';
+
+addEventListener('DOMContentLoaded', Init);
+
+function Keyboard(){
+    
+}
+
+function TestApp(div){
+    this.div = div;
+    this.keydown = {};
+    this.sound = {};
+    
+    this.keyboardmap = {
+        90: 440 * Math.pow(2, -4 / 12),   // D#
+        83: 440 * Math.pow(2, -3 / 12),   // E
+        88: 440 * Math.pow(2, -2 / 12),   // F
+        68: 440 * Math.pow(2, -1 / 12),   // F#
+        67: 440 * Math.pow(2, 0 / 12),   // A
+        70: 440 * Math.pow(2, 1 / 12),   // A#
+        86: 440 * Math.pow(2, 2 / 12),   // B
+        66: 440 * Math.pow(2, 3 / 12),   // C
+        72: 440 * Math.pow(2, 4 / 12),   // C#
+        78: 440 * Math.pow(2, 5 / 12),   // D
+        74: 440 * Math.pow(2, 6 / 12),   // D#
+        77: 440 * Math.pow(2, 7 / 12),   // E
+        188: 440 * Math.pow(2, 8 / 12),   // F
+        76: 440 * Math.pow(2, 9 / 12),   // F#
+        190: 440 * Math.pow(2, 10 / 12),   // A
+        186: 440 * Math.pow(2, 11 / 12),   // A#
+        191: 440 * Math.pow(2, 12 / 12),   // B
+        220: 440 * Math.pow(2, 14 / 12),   // C
+    };
+    
+    this.InitAudio();
+    this.InitDom();
+    this.InitDomEvent();
+    this.InitialCallDomEvent();
+}
+TestApp.prototype.InitAudio = function(){
+    this.con = new AudioContext;
+    this.gain_master = this.con.createGain();
+    this.gain_master.connect(this.con.destination);
+    this.gain_master.gain.value = 0.1;
+};
+TestApp.prototype.InitDom = function(){
+    var input = this.input_gain = ce('input');
+    input.type = 'range';
+    input.min = '0';
+    input.max = '1';
+    input.step = '0.01';
+    input.style.width = '100px';
+    input.value = '0.3';
+    this.div.appendChild(input);
+    
+    var span = this.span_gain = ce('span');
+    this.div.appendChild(span);
+    
+    var canvas = this.canvas = ce('canvas');
+    canvas.style.width = '600px';
+    canvas.style.height = '300px';
+    canvas.style.display = 'block';
+    this.div.appendChild(canvas);
+};
+TestApp.prototype.InitDomEvent = function(){
+     document.addEventListener('keydown', this.OnKeyDown.bind(this));
+     document.addEventListener('keyup', this.OnKeyUp.bind(this));
+     document.addEventListener('input', this.OnGainChange.bind(this));
+};
+TestApp.prototype.InitialCallDomEvent = function(){
+    this.OnGainChange();
+};
+TestApp.prototype.OnGainChange = function(){
+    this.span_gain.textContent = this.input_gain.value;
+    this.gain_master.gain.value = this.input_gain.value - 0;
+};
+TestApp.prototype.OnKeyDown = function(e){
+    var kc = e.keyCode;
+    if(!this.keydown[kc]){
+        log('keydown', e.keyCode);
+        this.keydown[kc] = true;
+        
+        this.ProcessKeyDown(kc);
+    }
+};
+TestApp.prototype.OnKeyUp = function(e){
+    var kc = e.keyCode;
+    if(this.keydown[kc]){
+        this.keydown[kc] = false;
+        
+        this.ProcessKeyUp(kc);
+    }
+};
+TestApp.prototype.ProcessKeyDown = function(keycode){
+    var char = keycode;
+    var freq = this.keyboardmap[char];
+    if(!freq) return;
+    if(this.sound[char]) return;
+    
+    var sound = this.sound[char] = {
+        oscillator: this.con.createOscillator(),
+        gain: this.con.createGain(),
+    };
+    var gain = sound.gain;
+    gain.gain.value = 1.0;
+    gain.connect(this.gain_master);
+    var os = sound.oscillator;
+    os.type = 'sine';
+    os.frequency.value = freq;
+    os.connect(gain);
+    os.start();
+};
+TestApp.prototype.ProcessKeyUp = function(keycode){
+    var char = keycode;
+    var freq = this.keyboardmap[char];
+    if(!freq) return;
+    if(!this.sound[char]) return;
+    
+    var sound = this.sound[char];
+    var gain = sound.gain;
+    gain.gain.setValueAtTime(1.0, this.con.currentTime);
+    gain.gain.linearRampToValueAtTime(0.0, this.con.currentTime + 0.05);
+    var os = sound.oscillator;
+    os.stop(this.con.currentTime + 0.05);
+    this.sound[char] = null;
+};
+
+function Init(){
+    var out = $('out');
+    var app = new TestApp(out);
+    log(app);
+}
+
+function $(){
+    return document.getElementById.apply(document, arguments);
+}
+function log(){
+    return console.log.apply(console, arguments);
+}
+function ce(){
+    return document.createElement.apply(document, arguments);
+}
+function ct(){
+    return document.createTextNode.apply(document, arguments);
+}
+})();
+</script>
+<header>
+<h1>
+    WebAudio Piano
+</h1>
+</header>
+<div id="out">
+</div>
