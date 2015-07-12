@@ -12,6 +12,7 @@ var TestApp = function(div){
     this.div = div;
     this.oscillators = [];
     this.con = new AudioContext;
+    this.sound_type = null;
     
     this.InitializeDom();
     this.AddDomEvent();
@@ -95,14 +96,28 @@ TestApp.Oscillator.prototype.InitializeDom = function(){
     
     this.span_gain = ce('span');
     d.appendChild(this.span_gain);
+    
+    d.appendChild(ct(' '));
+    
+    this.select_type = ce('select');
+    var addopt = function(name){
+        var opt = ce('option');
+        opt.value = name;
+        opt.appendChild(ct(name));
+        this.select_type.appendChild(opt);
+    }.bind(this);
+    ['sine', 'square', 'sawtooth', 'triangle'].forEach(addopt);
+    d.appendChild(this.select_type);
 };
 TestApp.Oscillator.prototype.AddDomEvent = function(){
     this.input_gain.addEventListener('input', this.OnChangeGain.bind(this));
     this.button_play.addEventListener('click', this.PlaySound.bind(this));
     this.button_stop.addEventListener('click', this.StopSound.bind(this));
+    this.select_type.addEventListener('change', this.OnChangeType.bind(this));
 };
 TestApp.Oscillator.prototype.InitialEvent = function(){
     this.OnChangeGain();
+    this.OnChangeType();
     this.StopSound();
 };
 TestApp.Oscillator.prototype.OnChangeGain = function(){
@@ -115,6 +130,7 @@ TestApp.Oscillator.prototype.PlaySound = function(){
     
     this.oscillator = this.con.createOscillator();
     this.oscillator.frequency.value = this.input_hz.value - 0;
+    this.oscillator.type = this.sound_type;
     this.oscillator.onended = function(){
         this.oscillator = null;
         this.StopSound();
@@ -131,6 +147,13 @@ TestApp.Oscillator.prototype.StopSound = function(){
         this.oscillator.stop();
     }
 }
+TestApp.Oscillator.prototype.OnChangeType = function(){
+    var type = this.select_type.value;
+    this.sound_type = type;
+    if(this.oscillator){
+        this.oscillator.type = this.select_type.value;
+    }
+};
 
 function Init(){
     var out = $('out');
