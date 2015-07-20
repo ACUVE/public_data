@@ -54,7 +54,9 @@ App.prototype = {
         var diff = (Math.log(hz) - Math.log(440)) / Math.LN2 * 12;
         var diff_int = Math.round(diff);
         var diff_12 = diff_int % 12;
+        var diff_oct = Math.floor(diff_int / 12) + 4;
         while(diff_12 < 0) diff_12 += 12;
+        if(diff_12 >= 3) ++diff_oct;
         
         var oto = [
             'A',
@@ -70,8 +72,7 @@ App.prototype = {
             'G',
             'G#',
         ][diff_12];
-        this.div_oto.textContent = oto + '  ' + Math.round((diff - diff_int) * 10) / 10;
-        // console.log(oto + Math.round((diff - diff_int) * 10) / 10);
+        this.div_oto.textContent = oto + diff_oct + '  ' + Math.round((diff - diff_int) * 10) / 10;
     },
     GetData: function(){
         this.analyser.getFloatTimeDomainData(this.audio_buffer);
