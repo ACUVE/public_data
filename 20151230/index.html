@@ -44,6 +44,7 @@ var color = function(){
         };
         newYMD( date );
         [].forEach.call( t.rows, function( r ){
+            var hit = false;
             [].forEach.call( r.cells, function( c ){
                 var match = c.innerHTML.match(/\s*(\d?\d)(\d\d)\s*/);
                 if( !match )
@@ -54,17 +55,22 @@ var color = function(){
                 if( ld.getTime() < now && now <= nd.getTime() )
                 {
                     c.style.backgroundColor = "#fcc";
-                    r.style.backgroundColor = "#fee";
-                    r.id = "now";
+                    hit = true;
                 }
                 else
-                {
                     c.style.backgroundColor = "inherit";
-                    r.style.backgroundColor = "inherit";
-                    r.id = "";
-                }
                 newYMD( nd );
             } );
+            if( hit )
+            {
+                r.style.backgroundColor = "#fee";
+                r.id = "now";
+            }
+            else
+            {
+                r.style.backgroundColor = "inherit";
+                r.id = "";
+            }
         } );
     } );
 };
