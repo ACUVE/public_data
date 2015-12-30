@@ -6,15 +6,55 @@
 html
 {
     font-size: small;
+    background-color: #fcfcfc;
 }
 table
 {
     text-align: center;
 }
 </style>
+<script>
+addEventListener( 'DOMContentLoaded', function(){
+    var now = Date.now();
+    var tables = document.querySelectorAll( 'table' );
+    [].forEach.call( tables, function( t ){
+        if( !t.dataset.date )
+            return;
+        var date = new Date( t.dataset.date );
+        if( !date.getYear() )
+            return;
+        var y, m, d;
+        var ld;
+        var newYMD = function( date ){
+            y = date.getFullYear();
+            m = date.getMonth();
+            d = date.getDate();
+            ld = date;
+        };
+        newYMD( date );
+        [].forEach.call( t.rows, function( r ){
+            [].forEach.call( r.cells, function( c ){
+                var match = c.innerHTML.match(/\s*(\d?\d)(\d\d)\s*/);
+                if( !match )
+                    return;
+                var nd = new Date( y, m, d, match[ 1 ] - 0, match[ 2 ] - 0, 59, 999 );
+                if( nd.getTime() < ld.getTime() )
+                    nd = new Date( y, m, d + 1, match[ 1 ] - 0, match[ 2 ] - 0, 59, 999 );
+                if( ld.getTime() < now && now <= nd.getTime() )
+                {
+                    c.style.backgroundColor = "#fcc";
+                    r.style.backgroundColor = "#fee";
+                    r.id = "now";
+                }
+                newYMD( nd );
+            } );
+        } );
+    } );
+} );
+</script>
 <h1>2015-2016年冬 旅行計画</h1>
 <h2>0日目,1日目,2日目</h2>
-<table>
+<table data-date="2015-12-30">
 <tr><td>駒込<td><td>2002<td>
 <tr><td>新宿<td>2219<td>2231<td>
 <tr><td>小田原<td>004<td>031<td>
@@ -64,7 +104,7 @@ table
 </table>
 <p>コミックバスター優悦館和歌山田辺店 泊</p>
 <h2>3日目</h2>
-<table>
+<table data-date="2015-12-02">
 <tr><td>紀伊田辺<td><td>619<td>
 <tr><td>串本<td>751<td><td>
 <tr><td>串本駅<td><td>755<td>
@@ -85,7 +125,7 @@ table
 </table>
 <p>コミックバスター 宇都宮駅東店 泊</p>
 <h2>4日目</h2>
-<table>
+<table data-date="2015-12-03">
 <tr><td>宇都宮<td><td>518<td>
 <tr><td>黒磯<td>609<td>622<td>
 <tr><td>福島<td>825<td>900<td>
@@ -100,7 +140,7 @@ table
 </table>
 <p>自遊空間 一関店 泊</p>
 <h2>5日目</h2>
-<table>
+<table data-date="2015-12-04">
 <tr><td>一ノ関<td><td>718<td>
 <tr><td>気仙沼<td>844<td>856<td>
 <tr><td>柳津<td>1052<td>1130<td>
