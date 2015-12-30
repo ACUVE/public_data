@@ -30,6 +30,7 @@ table .arr, table .dep
 }
 </style>
 <script>
+var first_flag = true;
 var color = function(){
     var now = Date.now();
     var tables = document.querySelectorAll( 'table' );
@@ -47,6 +48,7 @@ var color = function(){
             d = date.getDate();
             ld = date;
         };
+        var lc = null;
         newYMD( date );
         [].forEach.call( t.rows, function( r ){
             var hit = false;
@@ -64,7 +66,15 @@ var color = function(){
                 }
                 else
                     c.style.backgroundColor = "";
+                if( first_flag && lc )
+                {
+                    var diff_time_in_minute = (nd.getTime() - ld.getTime()) / (60 * 1000);
+                    lc.addEventListener( 'click', function(){
+                        alert( diff_time_in_minute + "分" );
+                    } );
+                }
                 newYMD( nd );
+                lc = c;
             } );
             if( hit )
             {
@@ -78,6 +88,7 @@ var color = function(){
             }
         } );
     } );
+    first_flag = false;
 };
 addEventListener( 'DOMContentLoaded', color );
 addEventListener( 'DOMContentLoaded', function(){
