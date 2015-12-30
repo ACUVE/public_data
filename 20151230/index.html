@@ -16,6 +16,10 @@ table
     box-sizing: border-box;
     border-collapse: collapse;
 }
+table tr:hover
+{
+    background-color: #ff8;
+}
 table .sta
 {
     width: 8em;
@@ -59,7 +63,7 @@ var color = function(){
                     hit = true;
                 }
                 else
-                    c.style.backgroundColor = "inherit";
+                    c.style.backgroundColor = "";
                 newYMD( nd );
             } );
             if( hit )
@@ -69,7 +73,7 @@ var color = function(){
             }
             else
             {
-                r.style.backgroundColor = "inherit";
+                r.style.backgroundColor = "";
                 r.id = "";
             }
         } );
