@@ -25,7 +25,7 @@ table .arr, table .dep
 }
 </style>
 <script>
-addEventListener( 'DOMContentLoaded', function(){
+var color = function(){
     var now = Date.now();
     var tables = document.querySelectorAll( 'table' );
     [].forEach.call( tables, function( t ){
@@ -57,10 +57,20 @@ addEventListener( 'DOMContentLoaded', function(){
                     r.style.backgroundColor = "#fee";
                     r.id = "now";
                 }
+                else
+                {
+                    c.style.backgroundColor = "inherit";
+                    r.style.backgroundColor = "inherit";
+                    r.id = "";
+                }
                 newYMD( nd );
             } );
         } );
     } );
+};
+addEventListener( 'DOMContentLoaded', color );
+addEventListener( 'DOMContentLoaded', function(){
+    setInterval( color, 5000 );
 } );
 </script>
 <h1>2015-2016年冬 旅行計画</h1>
