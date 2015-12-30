@@ -57,7 +57,7 @@ var color = function(){
         [].forEach.call( t.rows, function( r ){
             var hit = false;
             [].forEach.call( r.cells, function( c ){
-                var match = c.innerHTML.match(/\s*(\d?\d)(\d\d)\s*/);
+                var match = c.innerHTML.match(/^\s*(\d?\d)(\d\d)\s*$/);
                 if( !match )
                     return;
                 var nd = new Date( y, m, d, match[ 1 ] - 0, match[ 2 ] - 0, 59, 999 );
