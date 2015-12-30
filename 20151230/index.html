@@ -6,11 +6,22 @@
 html
 {
     font-size: small;
-    background-color: #fcfcfc;
+    background-color: #fcfcfc:
 }
 table
 {
     text-align: center;
+    width: 100%;
+    mergin: 0 auto;
+    box-sizing: border-box;
+}
+table .sta
+{
+    width: 8em;
+}
+table .arr, table .dep
+{
+    width: 3em;
 }
 </style>
 <script>
@@ -55,6 +66,10 @@ addEventListener( 'DOMContentLoaded', function(){
 <h1>2015-2016年冬 旅行計画</h1>
 <h2>0日目,1日目,2日目</h2>
 <table data-date="2015-12-30">
+<colgroup class="sta">
+<colgroup class="arr">
+<colgroup class="dep">
+<colgroup class="memo">
 <tr><td>駒込<td><td>2002<td>
 <tr><td>新宿<td>2219<td>2231<td>
 <tr><td>小田原<td>004<td>031<td>
@@ -105,6 +120,10 @@ addEventListener( 'DOMContentLoaded', function(){
 <p>コミックバスター優悦館和歌山田辺店 泊</p>
 <h2>3日目</h2>
 <table data-date="2015-12-02">
+<colgroup class="sta">
+<colgroup class="arr">
+<colgroup class="dep">
+<colgroup class="memo">
 <tr><td>紀伊田辺<td><td>619<td>
 <tr><td>串本<td>751<td><td>
 <tr><td>串本駅<td><td>755<td>
@@ -126,6 +145,10 @@ addEventListener( 'DOMContentLoaded', function(){
 <p>コミックバスター 宇都宮駅東店 泊</p>
 <h2>4日目</h2>
 <table data-date="2015-12-03">
+<colgroup class="sta">
+<colgroup class="arr">
+<colgroup class="dep">
+<colgroup class="memo">
 <tr><td>宇都宮<td><td>518<td>
 <tr><td>黒磯<td>609<td>622<td>
 <tr><td>福島<td>825<td>900<td>
@@ -141,6 +164,10 @@ addEventListener( 'DOMContentLoaded', function(){
 <p>自遊空間 一関店 泊</p>
 <h2>5日目</h2>
 <table data-date="2015-12-04">
+<colgroup class="sta">
+<colgroup class="arr">
+<colgroup class="dep">
+<colgroup class="memo">
 <tr><td>一ノ関<td><td>718<td>
 <tr><td>気仙沼<td>844<td>856<td>
 <tr><td>柳津<td>1052<td>1130<td>
